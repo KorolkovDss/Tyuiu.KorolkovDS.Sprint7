@@ -5,7 +5,6 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6.Test
     [TestClass]
     public sealed class DataServiceTest
     {
-        DataService ds = new DataService();
         [TestMethod]
         public void Patient_ValidData_CreatesSuccessfully()
         {

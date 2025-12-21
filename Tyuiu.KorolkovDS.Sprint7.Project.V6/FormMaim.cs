@@ -70,10 +70,10 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6
         }
         private void RefreshDataGridView()
         {
-            // Очищаем DataGridView
+            
             dataGridView1.Rows.Clear();
 
-            // Заполняем DataGridView данными из репозитория
+            
             var patients = patientRepository.GetAllPatients();
             foreach (var patient in patients)
             {
@@ -105,7 +105,7 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6
             row.Cells["ColumnBollist"].Value = patient.BolList;
             row.Cells["ColumnNote"].Value = patient.Note;
 
-            // Можно добавить скрытые данные для удобства
+            
             row.Tag = patient;
         }
 

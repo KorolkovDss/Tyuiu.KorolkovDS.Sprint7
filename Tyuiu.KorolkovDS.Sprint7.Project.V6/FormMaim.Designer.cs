@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             panelDataPatient_KDS = new Panel();
             groupBoxDoctor_KDS = new GroupBox();
             buttonChange_KDS = new Button();
@@ -36,6 +38,7 @@
             groupBoxNote_KDS = new GroupBox();
             textBoxNote_KDS = new TextBox();
             groupBoxDispY_KDS = new GroupBox();
+            checkBoxDispY_KDS = new CheckBox();
             groupBoxBolList_KDS = new GroupBox();
             textBoxBolList_KDS = new TextBox();
             groupBoxAmbHeal_KDS = new GroupBox();
@@ -67,9 +70,15 @@
             ColumnBolList = new DataGridViewTextBoxColumn();
             ColumnNote = new DataGridViewTextBoxColumn();
             panelINF_KDS = new Panel();
+            chartINF_KDS = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            panelWorkFile_KDS = new Panel();
+            groupBoxWorkWFile_KDS = new GroupBox();
+            buttonSaveFile_KDS = new Button();
+            buttonOpenFile_KDS = new Button();
             panelDataPatient_KDS.SuspendLayout();
             groupBoxDoctor_KDS.SuspendLayout();
             groupBoxNote_KDS.SuspendLayout();
+            groupBoxDispY_KDS.SuspendLayout();
             groupBoxBolList_KDS.SuspendLayout();
             groupBoxAmbHeal_KDS.SuspendLayout();
             groupBoxDiagnoz_KDS.SuspendLayout();
@@ -82,6 +91,10 @@
             groupBoxSurName.SuspendLayout();
             panelPatient_KDS.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            panelINF_KDS.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)chartINF_KDS).BeginInit();
+            panelWorkFile_KDS.SuspendLayout();
+            groupBoxWorkWFile_KDS.SuspendLayout();
             SuspendLayout();
             // 
             // panelDataPatient_KDS
@@ -166,6 +179,7 @@
             // 
             // groupBoxDispY_KDS
             // 
+            groupBoxDispY_KDS.Controls.Add(checkBoxDispY_KDS);
             groupBoxDispY_KDS.Dock = DockStyle.Top;
             groupBoxDispY_KDS.Location = new Point(3, 232);
             groupBoxDispY_KDS.Name = "groupBoxDispY_KDS";
@@ -173,6 +187,15 @@
             groupBoxDispY_KDS.TabIndex = 5;
             groupBoxDispY_KDS.TabStop = false;
             groupBoxDispY_KDS.Text = "Дисп. Учет";
+            // 
+            // checkBoxDispY_KDS
+            // 
+            checkBoxDispY_KDS.AutoSize = true;
+            checkBoxDispY_KDS.Location = new Point(135, 6);
+            checkBoxDispY_KDS.Name = "checkBoxDispY_KDS";
+            checkBoxDispY_KDS.Size = new Size(18, 17);
+            checkBoxDispY_KDS.TabIndex = 0;
+            checkBoxDispY_KDS.UseVisualStyleBackColor = true;
             // 
             // groupBoxBolList_KDS
             // 
@@ -453,11 +476,68 @@
             // 
             // panelINF_KDS
             // 
+            panelINF_KDS.Controls.Add(panelWorkFile_KDS);
+            panelINF_KDS.Controls.Add(chartINF_KDS);
             panelINF_KDS.Dock = DockStyle.Fill;
             panelINF_KDS.Location = new Point(1019, 0);
             panelINF_KDS.Name = "panelINF_KDS";
             panelINF_KDS.Size = new Size(276, 635);
             panelINF_KDS.TabIndex = 2;
+            // 
+            // chartINF_KDS
+            // 
+            chartArea1.Name = "ChartArea1";
+            chartINF_KDS.ChartAreas.Add(chartArea1);
+            chartINF_KDS.Dock = DockStyle.Top;
+            chartINF_KDS.Location = new Point(0, 0);
+            chartINF_KDS.Name = "chartINF_KDS";
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
+            series1.Name = "Series1";
+            series1.YValuesPerPoint = 2;
+            chartINF_KDS.Series.Add(series1);
+            chartINF_KDS.Size = new Size(276, 503);
+            chartINF_KDS.TabIndex = 0;
+            // 
+            // panelWorkFile_KDS
+            // 
+            panelWorkFile_KDS.Controls.Add(groupBoxWorkWFile_KDS);
+            panelWorkFile_KDS.Dock = DockStyle.Fill;
+            panelWorkFile_KDS.Location = new Point(0, 503);
+            panelWorkFile_KDS.Name = "panelWorkFile_KDS";
+            panelWorkFile_KDS.Size = new Size(276, 132);
+            panelWorkFile_KDS.TabIndex = 1;
+            // 
+            // groupBoxWorkWFile_KDS
+            // 
+            groupBoxWorkWFile_KDS.Controls.Add(buttonOpenFile_KDS);
+            groupBoxWorkWFile_KDS.Controls.Add(buttonSaveFile_KDS);
+            groupBoxWorkWFile_KDS.Dock = DockStyle.Fill;
+            groupBoxWorkWFile_KDS.Location = new Point(0, 0);
+            groupBoxWorkWFile_KDS.Name = "groupBoxWorkWFile_KDS";
+            groupBoxWorkWFile_KDS.Size = new Size(276, 132);
+            groupBoxWorkWFile_KDS.TabIndex = 0;
+            groupBoxWorkWFile_KDS.TabStop = false;
+            groupBoxWorkWFile_KDS.Text = "Работа с файлом";
+            // 
+            // buttonSaveFile_KDS
+            // 
+            buttonSaveFile_KDS.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            buttonSaveFile_KDS.Location = new Point(6, 41);
+            buttonSaveFile_KDS.Name = "buttonSaveFile_KDS";
+            buttonSaveFile_KDS.Size = new Size(122, 53);
+            buttonSaveFile_KDS.TabIndex = 0;
+            buttonSaveFile_KDS.Text = "Сохранить";
+            buttonSaveFile_KDS.UseVisualStyleBackColor = true;
+            // 
+            // buttonOpenFile_KDS
+            // 
+            buttonOpenFile_KDS.Location = new Point(148, 41);
+            buttonOpenFile_KDS.Name = "buttonOpenFile_KDS";
+            buttonOpenFile_KDS.Size = new Size(122, 53);
+            buttonOpenFile_KDS.TabIndex = 1;
+            buttonOpenFile_KDS.Text = "Открыть";
+            buttonOpenFile_KDS.UseVisualStyleBackColor = true;
             // 
             // FormMain_KDS
             // 
@@ -473,6 +553,8 @@
             groupBoxDoctor_KDS.ResumeLayout(false);
             groupBoxNote_KDS.ResumeLayout(false);
             groupBoxNote_KDS.PerformLayout();
+            groupBoxDispY_KDS.ResumeLayout(false);
+            groupBoxDispY_KDS.PerformLayout();
             groupBoxBolList_KDS.ResumeLayout(false);
             groupBoxBolList_KDS.PerformLayout();
             groupBoxAmbHeal_KDS.ResumeLayout(false);
@@ -494,6 +576,10 @@
             groupBoxSurName.PerformLayout();
             panelPatient_KDS.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            panelINF_KDS.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)chartINF_KDS).EndInit();
+            panelWorkFile_KDS.ResumeLayout(false);
+            groupBoxWorkWFile_KDS.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -538,5 +624,11 @@
         private DataGridViewTextBoxColumn ColumnBolList;
         private DataGridViewTextBoxColumn ColumnNote;
         private Panel panelINF_KDS;
+        private CheckBox checkBoxDispY_KDS;
+        private Panel panelWorkFile_KDS;
+        private GroupBox groupBoxWorkWFile_KDS;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartINF_KDS;
+        private Button buttonOpenFile_KDS;
+        private Button buttonSaveFile_KDS;
     }
 }
