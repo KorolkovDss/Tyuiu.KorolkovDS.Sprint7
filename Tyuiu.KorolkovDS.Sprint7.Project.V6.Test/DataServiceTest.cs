@@ -5,6 +5,7 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6.Test
     [TestClass]
     public sealed class DataServiceTest
     {
+        
         [TestMethod]
         public void Patient_ValidData_CreatesSuccessfully()
         {
@@ -13,13 +14,13 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6.Test
             {
                 Surname = "Иванов",
                 Name = "Иван",
-                Patronymic = "Иванович",
-                BirthDate = new DateTime(1980, 5, 15),
-                DoctorFullName = "Петров П.П.",
-                Specialization = "Терапевт",
-                Diagnosis = "ОРВИ",
-                AmbulatoryTreatment = true,
-                SickLeaveNumber = "БЛ-12345",
+                Otchestvo = "Иванович",
+                BDay = new DateTime(1980, 5, 15),
+                DocFio = "Петров П.П.",
+                Spec = "Терапевт",
+                Diagnoz = "ОРВИ",
+                AmbHeal = true,
+                BolList = "БЛ-12345",
                 Note = "Плановый осмотр"
             };
 

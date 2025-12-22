@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Windows.Forms.DataVisualization.Charting;
 using Tyuiu.KorolkovDS.Sprint7.Project.V6.Lib;
 using static Tyuiu.KorolkovDS.Sprint7.Project.V6.Lib.DataService;
 
@@ -70,10 +72,10 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6
         }
         private void RefreshDataGridView()
         {
-            
+
             dataGridView1.Rows.Clear();
 
-            
+
             var patients = patientRepository.GetAllPatients();
             foreach (var patient in patients)
             {
@@ -105,11 +107,11 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6
             row.Cells["ColumnBollist"].Value = patient.BolList;
             row.Cells["ColumnNote"].Value = patient.Note;
 
-            
+
             row.Tag = patient;
         }
 
-       
+
 
         private void buttonSave_KDS_Click(object sender, EventArgs e)
         {
@@ -121,6 +123,7 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6
                 patientRepository.AddPatient(patient);
                 AddPatientToDataGridView(patient);
                 ClearForm();
+                UpdateChartFromDataGridView();
 
                 MessageBox.Show("Пациент успешно добавлен", "Успех",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -155,6 +158,7 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6
                 if (patientRepository.UpdatePatient(selectedIndex, patient))
                 {
                     UpdateDataGridViewRow(selectedIndex, patient);
+                    UpdateChartFromDataGridView();
                     MessageBox.Show("Данные пациента обновлены", "Успех",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -185,10 +189,224 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6
                 {
                     dataGridView1.Rows.RemoveAt(selectedIndex);
                     ClearForm();
+                    UpdateChartFromDataGridView();
                     MessageBox.Show("Пациент удален", "Успех",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
+        }
+
+        private Dictionary<string, int> GetDiagnosisStatistics()
+        {
+            Dictionary<string, int> stats = new Dictionary<string, int>();
+
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.Cells["ColumnDiagnoz"].Value != null)
+                {
+                    string diagnosis = row.Cells["ColumnDiagnoz"].Value.ToString().Trim();
+
+                    if (!string.IsNullOrEmpty(diagnosis))
+                    {
+                        if (stats.ContainsKey(diagnosis))
+                        {
+                            stats[diagnosis]++;
+                        }
+                        else
+                        {
+                            stats[diagnosis] = 1;
+                        }
+                    }
+                }
+            }
+
+            return stats;
+        }
+
+        private void UpdateChartFromDataGridView()
+        {
+            try
+            {
+
+                var diagnosisStats = GetDiagnosisStatistics();
+
+                if (diagnosisStats.Count == 0)
+                {
+
+                    chartINF_KDS.Series.Clear();
+                    chartINF_KDS.Titles.Clear();
+                    chartINF_KDS.Titles.Add("Нет данных о диагнозах");
+                    return;
+                }
+
+
+                chartINF_KDS.Series.Clear();
+
+
+                Series series = new Series("Диагнозы");
+                series.ChartType = SeriesChartType.Column;
+
+
+                series.IsValueShownAsLabel = true;
+                series.LabelFormat = "{#}";
+                series.Color = Color.FromArgb(65, 105, 225);
+
+
+                foreach (var stat in diagnosisStats.OrderByDescending(x => x.Value))
+                {
+                    DataPoint point = new DataPoint();
+                    point.SetValueXY(stat.Key, stat.Value);
+                    point.Label = stat.Value.ToString();
+                    point.ToolTip = $"{stat.Key}: {stat.Value} пациентов";
+
+
+                    series.Points.Add(point);
+                }
+
+                chartINF_KDS.Series.Add(series);
+
+
+                if (chartINF_KDS.ChartAreas.Count > 0)
+                {
+                    chartINF_KDS.ChartAreas[0].AxisX.Title = "Диагнозы";
+                    chartINF_KDS.ChartAreas[0].AxisY.Title = "Количество пациентов";
+                    chartINF_KDS.ChartAreas[0].AxisX.Interval = 1;
+                    chartINF_KDS.ChartAreas[0].AxisX.LabelStyle.Angle = -45;
+                    chartINF_KDS.ChartAreas[0].AxisX.LabelStyle.Font = new Font("Arial", 9);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при обновлении графика: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void buttonSaveFile_KDS_Click(object sender, EventArgs e)
+        {
+            SaveCsvFile();
+        }
+
+        private void SaveCsvFile()
+        {
+            DataService ds = new DataService();
+            try
+            {
+                if (patientRepository.PatientCount == 0)
+                {
+                    MessageBox.Show("Нет данных для сохранения", "Информация",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "CSV файлы (*.csv)|*.csv|Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
+                    saveFileDialog.FilterIndex = 1;
+                    saveFileDialog.Title = "Сохранить данные пациентов в CSV файл";
+                    saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    saveFileDialog.RestoreDirectory = true;
+                    saveFileDialog.FileName = $"Пациенты_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+                    saveFileDialog.OverwritePrompt = true;
+
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string filePath = saveFileDialog.FileName;
+
+
+                        var patientsToSave = patientRepository.GetAllPatients();
+
+
+                        patientRepository.SaveToCsv(filePath, patientsToSave);
+
+
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show("Нет прав для сохранения файла в выбранную папку", "Ошибка доступа",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при сохранении файла: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void buttonOpenFile_KDS_Click(object sender, EventArgs e)
+        {
+            OpenCsvFile();
+        }
+
+        private void OpenCsvFile()
+        {
+            DataService ds = new DataService();
+            try
+            {
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.Filter = "CSV файлы (*.csv)|*.csv|Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
+                    openFileDialog.FilterIndex = 1;
+                    openFileDialog.Title = "Выберите CSV файл с данными пациентов";
+                    openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    openFileDialog.RestoreDirectory = true;
+
+
+                    openFileDialog.ShowPreview = true;
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string filePath = openFileDialog.FileName;
+
+
+                        DialogResult confirmResult = MessageBox.Show(
+                            "Текущие данные будут заменены. Продолжить?",
+                            "Подтверждение загрузки",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question);
+
+                        if (confirmResult == DialogResult.Yes)
+                        {
+
+                            var loadedPatients = patientRepository.LoadFromCsv(filePath);
+
+
+                            patientRepository.ReplaceAllPatients(loadedPatients);
+
+
+                            RefreshDataGridView();
+
+
+                            UpdateChartFromDataGridView();
+
+
+                        }
+                    }
+                }
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show($"Файл не найден: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке файла: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void buttonAbout_KDS_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"Разработал: Корольков Д.С. {Environment.NewLine}Программа для работы с данными по типу Поликлиники{Environment.NewLine}С разработкой Front-end  и Back-End частей", "О программе", MessageBoxButtons.OK);
+        }
+
+        private void buttonSpravka_KDS_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"")
         }
     }
 }
