@@ -77,8 +77,12 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6.Lib
 
                 try
                 {
+
                     if (!File.Exists(filePath))
+                    {
                         throw new FileNotFoundException($"Файл не найден: {filePath}");
+                    }
+
 
                     string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
 
@@ -112,6 +116,11 @@ namespace Tyuiu.KorolkovDS.Sprint7.Project.V6.Lib
                         loadedPatients.Add(patient);
                     }
                 }
+                catch (FileNotFoundException) 
+                {
+                    throw;
+                }
+
                 catch (Exception ex)
                 {
                     throw new Exception($"Ошибка при загрузке CSV: {ex.Message}", ex);
